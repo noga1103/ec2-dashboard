@@ -10,11 +10,16 @@ config.update({ region: "us-east-1" });
 
 const app = express();
 const port = process.env.PORT;
+
+
 app.get("/instances", (req: Request, res: Response) => {
+ 
   if (!req.query.region || !req.query.accessKey || !req.query.secretKey) {
     res.status(500).json({ error: "An error occurred" });
     return;
   }
+
+
   const accessKey = req.query.accessKey as string;
   const secretKey = req.query.secretKey as string;
   const region = req.query.region as string;
@@ -41,7 +46,8 @@ app.get("/instances", (req: Request, res: Response) => {
     if (err) {
       console.log("Error", err.stack);
       res.status(500).json({ error: "An error occurred" });
-    } else {
+      return;
+    } 
       const instances: any[] = [];
 
       if (data != undefined && data.Reservations != undefined) {
@@ -74,8 +80,8 @@ app.get("/instances", (req: Request, res: Response) => {
         }
 
         const totalInstances = instances.length;
+        const pageSize = Number(req.query.pageSize) || totalInstances;
         const totalPages = Math.ceil(totalInstances / pageSize);
-
         const startIndex = (page - 1) * pageSize;
         const endIndex = startIndex + pageSize;
         const pagedInstances = instances.slice(startIndex, endIndex);
@@ -91,7 +97,7 @@ app.get("/instances", (req: Request, res: Response) => {
       } else {
         res.status(500).json({ error: "No instance data available" });
       }
-    }
+   
   });
 });
 

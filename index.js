@@ -10,14 +10,26 @@ var app = express();
 var port = process.env.PORT;
 app.get("/instances", function (req, res) {
     if (!req.query.region || !req.query.accessKey || !req.query.secretKey) {
-        res.status(500).json({ error: "An error occurred1" });
+        res.status(500).json({ error: "An error occurred" });
         return;
     }
     var accessKey = req.query.accessKey;
     var secretKey = req.query.secretKey;
     var region = req.query.region;
     var sortAttribute = req.query.sortBy;
-    var pageSize = Number(req.query.pageSize) || 10;
+    if (req.query.page && (!Number(req.query.page) || Number(req.query.page) <= 0)) {
+        res.status(400).json({ error: "Invalid page parameter. Must be a positive integer." });
+        return;
+    }
+    if (req.query.pageSize && (!Number(req.query.pageSize) || Number(req.query.pageSize) <= 0)) {
+        res.status(400).json({ error: "Invalid pageSize parameter. Must be a positive integer." });
+        return;
+    }
+    var array = ["Name", "Id", "Type", "State", "AZ", "PublicIP", "PrivateIPs"];
+    if (sortAttribute && !array.includes(sortAttribute)) {
+        res.status(400).json({ error: "Invalid sortBy parameter. Must be one of 'Name', 'Id', 'Type', 'State', 'AZ', 'PublicIP', 'PrivateIPs'." });
+        return;
+    }
     var page = Number(req.query.page) || 1;
     var ec2 = new client_ec2_1.EC2({
         apiVersion: "2016-11-15",
@@ -33,7 +45,7 @@ app.get("/instances", function (req, res) {
     ec2.describeInstances(params, function (err, data) {
         if (err) {
             console.log("Error", err.stack);
-            res.status(500).json(err.stack);
+            res.status(500).json({ error: "credentials error" });
             return;
         }
         var instances = [];
@@ -63,10 +75,10 @@ app.get("/instances", function (req, res) {
                 });
             }
             var totalInstances = instances.length;
-            var pageSize_1 = Number(req.query.pageSize) || totalInstances;
-            var totalPages = Math.ceil(totalInstances / pageSize_1);
-            var startIndex = (page - 1) * pageSize_1;
-            var endIndex = startIndex + pageSize_1;
+            var pageSize = Number(req.query.pageSize) || totalInstances;
+            var totalPages = Math.ceil(totalInstances / pageSize);
+            var startIndex = (page - 1) * pageSize;
+            var endIndex = startIndex + pageSize;
             var pagedInstances = instances.slice(startIndex, endIndex);
             var response = {
                 totalInstances: totalInstances,

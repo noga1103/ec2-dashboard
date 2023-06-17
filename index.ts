@@ -31,12 +31,13 @@ app.get("/instances", (req: Request, res: Response) => {
    if(Number(req.query.page)<=0 ||Number(req.query.pageSize)<=0){
     res.status(500).json({ error: "invalid paging" });
   }
+if(sortAttribute){
 const array: string[] = ["Name", "Id", "Type", "State", "AZ", "PublicIP", "PrivateIPs"];
 const searchString: string =sortAttribute ;
 if (!array.includes(searchString)) {
   res.status(500).json({ error: "invalid sorting" });
 }
-  
+}
  const ec2 = new EC2({
     apiVersion: "2016-11-15",
     credentials: {

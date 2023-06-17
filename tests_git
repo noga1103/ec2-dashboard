@@ -1,5 +1,3 @@
-// the real tests are on my computer with the real access key and secert access key
-
 
 function testURL(url, expectedOutput, testNum) {
  
@@ -32,11 +30,11 @@ function testURL(url, expectedOutput, testNum) {
   {"error":"An error occurred"},
   1);
   
-  testURL("https://ec2dashboard-z89h.onrender.com/instances/?accessKey=XXXXX&secretKey=7UMmhnfdkT4x5UL8GYVsncy0WasDRrSt08zPMWsM",
+  testURL("https://ec2dashboard-z89h.onrender.com/instances/?accessKey=XXXXX&secretKey=YYYYY",
   {"error":"An error occurred"},
   2);
   
-  testURL("https://ec2dashboard-z89h.onrender.com/instances/?accessKey=XXXXX&secretKey=7UMmhnfdkT4x5UL8GYVsncy0WasDRrSt08zPMWsM",
+  testURL("https://ec2dashboard-z89h.onrender.com/instances/?accessKey=XXXXX&secretKey=YYYYY",
   {"error":"An error occurred"},
   3);
   

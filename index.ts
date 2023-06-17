@@ -45,7 +45,7 @@ app.get("/instances", (req: Request, res: Response) => {
   ec2.describeInstances(params, function (err, data) {
     if (err) {
       console.log("Error", err.stack);
-      res.status(500).json(err.stack);
+      res.status(500).json(error: "credentials error");
       return;
     } 
       const instances: any[] = [];

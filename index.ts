@@ -15,7 +15,7 @@ const port = process.env.PORT;
 app.get("/instances", (req: Request, res: Response) => {
  
   if (!req.query.region || !req.query.accessKey || !req.query.secretKey) {
-    res.status(500).json({ error: "An error occurred" });
+    res.status(500).json({ error: "missing args" });
     return;
   }
 
@@ -45,7 +45,7 @@ app.get("/instances", (req: Request, res: Response) => {
   ec2.describeInstances(params, function (err, data) {
     if (err) {
       console.log("Error", err.stack);
-      res.status(500).json({ error: "An error occurred" });
+      res.status(500).json(err.stack);
       return;
     } 
       const instances: any[] = [];

@@ -86,7 +86,7 @@ app.get("/instances", (req: Request, res: Response) => {
         const endIndex = startIndex + pageSize;
         const pagedInstances = instances.slice(startIndex, endIndex);
 
-        const response = {
+        var response = {
           totalInstances,
           totalPages,
           currentPage: page,

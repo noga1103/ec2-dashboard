@@ -13,9 +13,10 @@ const port = process.env.PORT;
 
 
 app.get("/instances", (req: Request, res: Response) => {
+
  
   if (!req.query.region || !req.query.accessKey || !req.query.secretKey) {
-    res.status(500).json({ error: "missing args" });
+    res.status(500).json({ error: "An error occurred" });
     return;
   }
 
@@ -25,20 +26,27 @@ app.get("/instances", (req: Request, res: Response) => {
   const region = req.query.region as string;
 
   const sortAttribute = req.query.sortBy as string;
+ 
+
+  if (req.query.page && (!Number(req.query.page) || Number(req.query.page) <= 0)) {
+    res.status(400).json({ error: "Invalid page parameter. Must be a positive integer." });
+    return;
+  }
+
+  if (req.query.pageSize && (!Number(req.query.pageSize) || Number(req.query.pageSize) <= 0)) {
+    res.status(400).json({ error: "Invalid pageSize parameter. Must be a positive integer." });
+    return;
+  }
+
+  const array: string[] = ["Name", "Id", "Type", "State", "AZ", "PublicIP", "PrivateIPs"];
+
+  if (sortAttribute && !array.includes(sortAttribute)) {
+    res.status(400).json({ error: "Invalid sortBy parameter. Must be one of 'Name', 'Id', 'Type', 'State', 'AZ', 'PublicIP', 'PrivateIPs'." });
+    return;
+  }
   const page = Number(req.query.page) || 1;
 
-
-   if(Number(req.query.page)<=0 ||Number(req.query.pageSize)<=0){
-    res.status(500).json({ error: "invalid paging" });
-  }
-if(sortAttribute){
-const array: string[] = ["Name", "Id", "Type", "State", "AZ", "PublicIP", "PrivateIPs"];
-const searchString: string =sortAttribute ;
-if (!array.includes(searchString)) {
-  res.status(500).json({ error: "invalid sorting" });
-}
-}
- const ec2 = new EC2({
+  const ec2 = new EC2({
     apiVersion: "2016-11-15",
     credentials: {
       accessKeyId: accessKey,
@@ -96,7 +104,7 @@ if (!array.includes(searchString)) {
         const endIndex = startIndex + pageSize;
         const pagedInstances = instances.slice(startIndex, endIndex);
 
-        var response = {
+        const response = {
           totalInstances,
           totalPages,
           currentPage: page,

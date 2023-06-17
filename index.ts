@@ -25,7 +25,7 @@ app.get("/instances", (req: Request, res: Response) => {
   const region = req.query.region as string;
 
   const sortAttribute = req.query.sortBy as string;
-  const pageSize = Number(req.query.pageSize) || 10;
+  //const pageSize = Number(req.query.pageSize) || 10;
   const page = Number(req.query.page) || 1;
 
   const ec2 = new EC2({

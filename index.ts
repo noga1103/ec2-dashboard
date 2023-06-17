@@ -25,10 +25,19 @@ app.get("/instances", (req: Request, res: Response) => {
   const region = req.query.region as string;
 
   const sortAttribute = req.query.sortBy as string;
-  //const pageSize = Number(req.query.pageSize) || 10;
   const page = Number(req.query.page) || 1;
 
-  const ec2 = new EC2({
+
+   if(Number(req.query.page)<=0 ||Number(req.query.pageSize)<=0){
+    res.status(500).json({ error: "invalid paging" });
+  }
+const array: string[] = ["Name", "Id", "Type", "State", "AZ", "PublicIP", "PrivateIPs"];
+const searchString: string =sortAttribute ;
+if (!array.includes(searchString)) {
+  res.status(500).json({ error: "invalid sorting" });
+}
+  
+ const ec2 = new EC2({
     apiVersion: "2016-11-15",
     credentials: {
       accessKeyId: accessKey,

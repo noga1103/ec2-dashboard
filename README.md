@@ -1,4 +1,5 @@
 # ec2-dashboard
+A service I made for seeing your EC2-instances using AWS.
 
 To launch the app, go to "https://ec2dashboard-z89h.onrender.com/instances?accessKey=YOUR-ACCESSKEY&secretKey=YOUR-SECRETKEY&region=YOUR-REGION". Replace YOUR-ACCESSKEY, YOUR-SECRETKEY, and YOUR-REGION with your access key, secret key, and region, respectively. 
 SECERTKEY could contain special characters such as '/' or '=', make sure you urlencode it before using it in the API.
